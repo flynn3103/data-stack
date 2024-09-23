@@ -160,3 +160,26 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# Ignore node_modules directory
+node_modules/
+
+# Ignore log files
+*.log
+# Ignore airflow
+airflow/data
+airflow/logs
+airflow/plugins
+# Ignore compiled binary files
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Ignore editor files
+.vscode/
+.idea/
+data/
+airflow/run_env/dags/__pycache__
+.csv
+data-validation/data
