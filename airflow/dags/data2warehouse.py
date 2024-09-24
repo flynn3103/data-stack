@@ -10,7 +10,9 @@ from great_expectations_provider.operators.great_expectations import (
     GreatExpectationsOperator
 )
 
+
 from airflow import DAG
+
 
 DATA_DIR = "/opt/airflow/data/"
 POSTGRES_CONN_ID = "postgres_default"

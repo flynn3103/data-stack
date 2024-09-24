@@ -11,12 +11,27 @@ with DAG(dag_id="get_data_from_source", start_date=datetime(2023, 7, 1), schedul
     # For example, submit a job to a Spark cluster, initiate a new cluster,
     # run containers, upgrade software packages on Linux systems,
     # or installing a PyPI package
-    system_maintenance_task = BashOperator(
-        task_id="system_maintenance_task",
-        # bash_command='apt-get update && apt-get upgrade -y'
-        bash_command='echo "Install some pypi libs..."',
-    )
+    # Define the task to grant permissions for the whole project
+    
 
+    # system_maintenance_task = BashOperator(
+    #     task_id="system_maintenance_task",
+    #     # bash_command='apt-get update && apt-get upgrade -y'
+    #     bash_command='echo "Install some pypi libs..."',
+    # )
+
+    # Define the BashOperator task to grant permissions
+    grant_permissions = BashOperator(
+        task_id='grant_permissions_task',
+        bash_command="""
+        data_path="/opt/airflow/"
+        echo "Setting ownership for $data_path"
+        sudo chown -R 50000:0 $data_path
+        echo "Setting permissions for $data_path"
+        sudo chmod -R 755 $data_path
+        echo "Permissions granted successfully for $data_path"
+        """,
+    )
     # https://airflow.apache.org/docs/apache-airflow/stable/howto/operator/python.html
     @task
     def download_nyc_data_yellow():
@@ -207,9 +222,18 @@ with DAG(dag_id="get_data_from_source", start_date=datetime(2023, 7, 1), schedul
 
         import pandas as pd
 
-        data_path = "/opt/airflow/data/"
-        streamming_path = os.path.join(data_path, "stream")
-        os.makedirs(streamming_path, exist_ok=True)
+        """Task to set up the directory with necessary permissions."""
+        # Change ownership and permissions
+        try:
+            data_path = "/opt/airflow/data/"
+            streamming_path = os.path.join(data_path, "stream")
+            subprocess.run(["sudo", "chown", "-R", "50000:0", data_path], check=True)
+            subprocess.run(["sudo", "chmod", "-R", "755", data_path], check=True)
+            # Create the directory if it doesn't exist
+            os.makedirs(streamming_path, exist_ok=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error setting permissions: {e}")
+
         df_list = []
         for file in os.listdir(data_path):
             df = pd.read_parquet(os.path.join(data_path, file))
@@ -226,7 +250,7 @@ with DAG(dag_id="get_data_from_source", start_date=datetime(2023, 7, 1), schedul
         df.to_parquet(os.path.join(streamming_path, "stream.parquet"))
 
     (
-        system_maintenance_task
+        grant_permissions
         >> 
         [download_nyc_data_yellow(), download_nyc_data_green()]
         >> fix_data_type()
