@@ -7,32 +7,15 @@ import os
 import pandas as pd
 import requests
 
-# Create a DAG with the appropriate settings
-with DAG(dag_id="get_data_from_source", start_date=datetime(2023, 7, 1), schedule=None) as dag:
-    
-    # BashOperator to set the necessary permissions for the data directory
-    grant_permissions = BashOperator(
-        task_id='grant_permissions_task',
-        bash_command="""
-        data_path="/opt/airflow/data/"
-        echo "Setting ownership for $data_path"
-        echo "Setting permissions for $data_path"
-        sudo chmod -R 755 $data_path
-        echo "Permissions granted successfully for $data_path"
-        """,
-    )
+DATA_DIR = "/opt/airflow/data/"
 
-    @task
-    def download_data(data_type: str):
+def download_data_task(data_type: str):
         """
         Task to download NYC trip data (yellow/green) from the specified source.
-        
         Args:
             data_type (str): The type of data to download ("yellow" or "green").
         """
-        DATA_DIR = "/opt/airflow/data/"
         os.makedirs(DATA_DIR, exist_ok=True)
-
         years = ["2021", "2022"]
         months = [f"{i:02d}" for i in range(1, 13)]
         url_prefix = "https://d37ci6vzurychx.cloudfront.net/trip-data/"
@@ -56,8 +39,7 @@ with DAG(dag_id="get_data_from_source", start_date=datetime(2023, 7, 1), schedul
                 except requests.RequestException as e:
                     print(f"Error downloading file {url_download}: {e}")
 
-    @task
-    def process_parquet_files(process_type: str):
+def process_parquet_files_task(process_type: str):
         """
         Generic task to process parquet files for different types of transformations.
 
@@ -115,8 +97,7 @@ with DAG(dag_id="get_data_from_source", start_date=datetime(2023, 7, 1), schedul
             except Exception as e:
                 print(f"Error processing file {file}: {e}")
 
-    @task
-    def create_streaming_data():
+def create_streaming_data_task():
         """
         Task to create streaming data from processed parquet files.
         """
@@ -147,13 +128,3 @@ with DAG(dag_id="get_data_from_source", start_date=datetime(2023, 7, 1), schedul
         
         except Exception as e:
             print(f"Error creating streaming data: {e}")
-
-    # Defining the task dependencies
-    (
-        grant_permissions
-        >> [download_data("yellow"), download_data("green")]
-        >> process_parquet_files("fix_data_type")
-        >> process_parquet_files("transform")
-        >> process_parquet_files("drop_missing")
-        >> create_streaming_data()
-    )
