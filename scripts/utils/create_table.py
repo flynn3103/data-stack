@@ -38,6 +38,5 @@ def main():
     except Exception as e:
         print(f"Failed to create table with error: {e}")
 
-
 if __name__ == "__main__":
     main()
