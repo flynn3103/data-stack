@@ -1,4 +1,5 @@
-FROM apache/airflow:2.7.3-python3.9
+FROM apache/airflow:2.7.3-python3.8
+
 
 USER root
 WORKDIR /opt/airflow
@@ -8,6 +9,8 @@ RUN apt-get update && \
 
 USER airflow
 # Copy requirements.txt into the Docker image
+# add dags
+COPY ./dags/ /opt/airflow/dags
 COPY requirements.txt requirements.txt
 
 # This is to fix a bug in Airflow with PostgreSQL connection

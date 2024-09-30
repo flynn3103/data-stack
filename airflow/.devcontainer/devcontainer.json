@@ -4,13 +4,18 @@
     "service": "airflow-webserver",  // Specify your main service/container name here
     "workspaceFolder": "/opt/airflow",
     "remoteUser": "airflow",          // Specify the user you want to switch to
-    "settings": {
-      "terminal.integrated.shell.linux": "/bin/bash"
-    },
-    "extensions": [
-      "ms-python.python",            // Python extension
-      "ms-azuretools.vscode-docker"  // Docker extension (optional)
-    ],
+    "customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python"   // Install the Python extension
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "/usr/local/bin/python", // Set the default Python interpreter path
+				"python.linting.enabled": true,                            // Enable linting
+				"python.linting.pylintEnabled": true                       // Enable pylint
+			}
+		}
+	  },
     "mounts": [
       "source=${localWorkspaceFolder}/dags,target=/opt/airflow/dags,type=bind",
       "source=${localWorkspaceFolder}/logs,target=/opt/airflow/logs,type=bind",
