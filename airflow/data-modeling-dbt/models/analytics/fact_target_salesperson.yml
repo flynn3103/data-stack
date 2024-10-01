@@ -1,0 +1,33 @@
+version: 2
+models:
+  - name: fact_target_salesperson
+    columns:
+      - name: year_month
+        tests:
+          - not_null
+
+      - name: salesperson_person_key
+        tests:
+          - not_null  
+
+      - name: target_gross_amount
+        tests:
+          - not_null  
+
+      - name: gross_amount
+        tests:
+          - not_null
+
+      - name: ratio_achieve
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: '=gross_amount/ target_gross_amount'
+
+      - name: is_achieved
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Achieved', 'Not Achieved']
+          
+        

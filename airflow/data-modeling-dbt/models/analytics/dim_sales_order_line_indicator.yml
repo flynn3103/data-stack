@@ -1,0 +1,23 @@
+version: 2
+models:
+  - name: dim_sales_order_line_indicator
+    columns:
+      - name: sales_order_line_indicator_key
+        tests:
+          - not_null
+          - unique
+      - name: is_undersupply_backordered
+        tests:
+          - not_null  
+          - accepted_values: 
+              values: ['Undersupply Backordered', 'Not Undersupply Backordered', 'Undefined']
+      - name: package_type_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_package_type')
+              field: package_type_key
+      - name: package_type_name
+        tests:
+          - not_null  
+      

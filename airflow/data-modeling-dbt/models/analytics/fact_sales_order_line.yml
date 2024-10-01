@@ -1,0 +1,68 @@
+version: 2
+models:
+  - name: fact_sales_order_line
+    tests:
+      - dbt_utils.equal_rowcount:
+          compare_model: "`vit-lam-data.wide_world_importers.sales__order_lines`"
+
+    columns:
+      - name: sales_order_line_key
+        tests:
+          - not_null
+          - unique
+      - name: sales_order_key
+        tests:
+          - not_null  
+          - relationships:
+              to: ref('stg_fact_sales_order')
+              field: sales_order_key
+      - name: product_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_product')
+              field: product_key
+      - name: salesperson_person_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_salesperson_person')
+              field: salesperson_key
+      - name: picked_by_person_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_picked_by_person')
+              field: picked_by_person_key
+      - name: customer_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customer')
+              field: customer_key
+              
+      - name: quantity
+        tests:
+          - custom_test_equal_sum:
+              compare_model:  "`vit-lam-data.wide_world_importers.sales__order_lines`"
+              compare_column: quantity
+              
+      - name: gross_amount
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: '= quantity * unit_price'
+
+      - name: sales_order_line_indicator_key
+        tests:
+          - not_null  
+          - relationships:
+              to: ref('dim_sales_order_line_indicator')
+              field: sales_order_line_indicator_key
+
+      - name: order_date
+        tests:
+          - not_null  
+          - dbt_utils.accepted_range:
+              min_value: "'2013-01-01'"
+              max_value: 'CURRENT_DATE'
+      

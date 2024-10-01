@@ -1,0 +1,56 @@
+version: 2
+models:
+  - name: dim_customer
+    columns:
+      - name: customer_key
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_name
+        tests:
+          - not_null
+            
+      - name: is_statement_sent
+        tests:
+          - not_null
+          - accepted_values:
+              values: [ 'Statement Sent', 'Not Statement Sent', 'Undefined']
+              
+      - name: is_on_credit_hold
+        tests:
+          - not_null  
+          - accepted_values:
+              values: [ 'Not On Credit Hold', 'On Credit Hold', 'Undefined']
+          
+      - name: customer_category_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_dim_customer_category')
+              field: customer_category_key
+              
+      - name: customer_category_name
+        tests:
+          - not_null  
+          
+      - name: delivery_method_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_dim_delivery_method')
+              field: delivery_method_key
+              
+      - name: delivery_city_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_dim_city')
+              field: city_key
+              
+      - name: state_province_key
+        tests:
+          - relationships:
+              to: ref('stg_dim_state')
+              field: state_province_key    
+      
