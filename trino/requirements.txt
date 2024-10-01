@@ -1,0 +1,8 @@
+requests
+minio
+pandas
+pyiceberg
+trino
+getdaft
+sqlalchemy
+psycopg2
