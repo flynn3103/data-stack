@@ -18,6 +18,7 @@
 	  },
     "mounts": [
       "source=${localWorkspaceFolder}/dags,target=/opt/airflow/dags,type=bind",
+      "source=${localWorkspaceFolder}/dbt,target=/opt/airflow/dbt,type=bind",
       "source=${localWorkspaceFolder}/logs,target=/opt/airflow/logs,type=bind",
       "source=${localWorkspaceFolder}/plugins,target=/opt/airflow/plugins,type=bind",
       "source=${localWorkspaceFolder}/config,target=/opt/airflow/config,type=bind"

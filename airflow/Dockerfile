@@ -29,4 +29,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 # # Requirement for running Docker Operator
 # RUN pip install apache-airflow-providers-docker==3.7.5
 
-RUN chown -R airflow:airflow /opt/airflow/dbt
+# RUN chown -R airflow:airflow /opt/airflow/dbt
