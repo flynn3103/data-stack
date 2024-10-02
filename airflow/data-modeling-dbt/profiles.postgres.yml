@@ -1,0 +1,15 @@
+# Documentation: https://docs.getdbt.com/docs/get-started/connection-profiles
+
+template:
+  outputs:
+    dev:
+      host: zzz
+      port: 5432
+      dbname: zzz
+      user: zzz
+      pass: zzz
+      schema: analytics
+      type: postgres
+      threads: 1
+      keepalives_idle: 0 # default 0, indicating the system default
+  target: dev
