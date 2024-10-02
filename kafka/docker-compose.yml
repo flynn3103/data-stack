@@ -1,38 +1,38 @@
 version: "3.9" 
 services:
-  oltp:
-    image: postgres:latest
-    container_name: oltp
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    ports:
-      - "15432:5432"
-    networks:
-      kafka:
-        ipv4_address: 172.20.0.15   
+  # oltp:
+  #   image: postgres:latest
+  #   container_name: oltp
+  #   environment:
+  #     - POSTGRES_DB=postgres
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #   ports:
+  #     - "15432:5432"
+  #   networks:
+  #     kafka:
+  #       ipv4_address: 172.20.0.15   
 
-  mongo:
-    container_name: mongo
-    image: mongo:5.0.5
-    ports:
-    - 27017:27017
-    volumes:
-    - ./mongo/init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
-    - ./mongo/keyfile.pem:/tmp/keyfile.pem.orig:ro
-    entrypoint:
-    - bash
-    - -c
-    - |
-         cp /tmp/keyfile.pem.orig /tmp/keyfile.pem
-         chmod 400 /tmp/keyfile.pem
-         chown 999:999 /tmp/keyfile.pem
-         exec docker-entrypoint.sh $$@
-    command: ["mongod", "--bind_ip", "0.0.0.0", "--replSet", "rs0", "--auth", "--keyFile", "/tmp/keyfile.pem"]
-    networks:
-      kafka:
-        ipv4_address: 172.20.0.14 
+  # mongo:
+  #   container_name: mongo
+  #   image: mongo:5.0.5
+  #   ports:
+  #   - 27017:27017
+  #   volumes:
+  #   - ./mongo/init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
+  #   - ./mongo/keyfile.pem:/tmp/keyfile.pem.orig:ro
+  #   entrypoint:
+  #   - bash
+  #   - -c
+  #   - |
+  #        cp /tmp/keyfile.pem.orig /tmp/keyfile.pem
+  #        chmod 400 /tmp/keyfile.pem
+  #        chown 999:999 /tmp/keyfile.pem
+  #        exec docker-entrypoint.sh $$@
+  #   command: ["mongod", "--bind_ip", "0.0.0.0", "--replSet", "rs0", "--auth", "--keyFile", "/tmp/keyfile.pem"]
+  #   networks:
+  #     kafka:
+  #       ipv4_address: 172.20.0.14 
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
