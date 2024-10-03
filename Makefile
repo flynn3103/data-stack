@@ -16,3 +16,8 @@ stream_up:
 	docker compose -f streaming/docker-compose.yml up -d
 stream_down:
 	docker compose -f streaming/docker-compose.yml down
+spark_up:
+	docker build -f spark/Dockerfile -t custom-apache-spark:3.5.1 .
+	docker compose -f spark/docker-compose.yml up -d
+spark_down:
+	docker compose -f spark/docker-compose.yml down
