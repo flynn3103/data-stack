@@ -12,9 +12,9 @@ trino_down:
 trino_restart:
 	docker compose -f trino/docker-compose.yml down
 	docker compose -f trino/docker-compose.yml up -d
-stream_up:
+kafka_up:
 	docker compose -f streaming/docker-compose.yml up -d
-stream_down:
+kafka_down:
 	docker compose -f streaming/docker-compose.yml down
 spark_up:
 	docker build -f spark/Dockerfile -t custom-apache-spark:3.5.1 .
