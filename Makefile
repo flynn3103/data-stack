@@ -6,9 +6,9 @@ airflow_build:
 airflow_down:
 	docker compose -f airflow/docker-compose.yaml down
 trino_up:
-	docker compose -f trino/docker-compose.yml up -d
+	docker compose -f database/trino/docker-compose.yml up -d
 trino_down:
-	docker compose -f trino/docker-compose.yml down
+	docker compose -f database/trino/docker-compose.yml down
 trino_restart:
 	docker compose -f trino/docker-compose.yml down
 	docker compose -f trino/docker-compose.yml up -d
